@@ -1,0 +1,90 @@
+# Версия docker-compose
+version: '3'
+
+# определяем единую сеть
+networks:
+  inception:
+
+  # Список наших сервисов (контейнеров)
+services:
+  nginx:
+    # определяем сеть для NGINX
+    networks:
+      - inception
+    # собираем образ NGINX
+    build:
+      context: ./nginx
+    # указаываем файл с переменными окружения
+    env_file:
+      - .env
+    # маршрутизируем порты
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - wordpress
+    # монтируем директории, слева директории на основной машине, справа - куда они монтируются в контейнере
+    volumes:
+      - wordpress-data:/var/www/wordpress
+    # задаем имя контейнеру
+    container_name: nginx
+    # указываем условие перезапуска контейнера
+    restart: unless-stopped
+
+  wordpress:
+    # определяем сеть для WordPress
+    networks:
+      - inception
+    # собираем образ WordPress
+    build:
+      context: ./wordpress
+    # указаываем файл с переменными окружения
+    env_file:
+      - .env
+    # маршрутизируем порты
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mariadb
+    # монтируем директории
+    volumes:
+      - wordpress-data:/var/www/wordpress
+    # задаем имя контейнеру
+    container_name: wordpress
+    # указываем условие перезапуска контейнера
+    restart: unless-stopped
+
+  mariadb:
+    # определяем сеть для MariaDB
+    networks:
+      - inception
+    # собираем образ MariaDB
+    build:
+      context: ./mariadb
+    # указаываем файл с переменными окружения
+    env_file:
+      - .env
+    # маршрутизируем порты
+    ports:
+      - "3306:3306"
+    # монтируем директории
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    # задаем имя контейнеру
+    container_name: mariadb
+    # указываем условие перезапуска контейнера
+    restart: unless-stopped
+
+volumes:
+  wordpress-data:
+    driver_opts:
+      o: bind
+      device: "/home/mshmelly/data/wordpress-data"
+      type: none
+    driver: local
+  mariadb-data:
+    driver_opts:
+      o: bind
+      device: "/home/mshmelly/data/mariadb-data"
+      type: none
+    driver: local
