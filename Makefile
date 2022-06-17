@@ -3,6 +3,7 @@ include srcs/.env
 DOCKER = cd srcs && sudo docker-compose -f ./docker-compose.yml
 
 all:
+	@ echo "127.0.0.1 mshmelly.42.fr" >> /etc/hosts
 	mkdir -p $(DB_VOL)
 	mkdir -p $(WP_VOL)
 	cd srcs && sudo docker-compose up --build
@@ -27,11 +28,11 @@ clean:
 	sudo rm -rf /home/${USER}/data/mariadb-data/
 	sudo rm -rf /home/${USER}/data/wordpress-data/
 	sudo docker volume prune -f
-	sudo docker stop $$(sudo docker ps -qa)
-	sudo docker rm -f $$(sudo docker ps -qa)
-	sudo docker rmi -f $$(sudo docker images -qa)
-	sudo docker volume rm $$(sudo docker volume ls -q)
-	sudo docker network rm $$(sudo docker network ls -q) 2>/dev/null
+	sudo docker stop $$(sudo docker ps -qa) 2>/dev/null
+	sudo docker rm -f $$(sudo docker ps -qa) 2>/dev/null
+	sudo docker rmi -f $$(sudo docker images -qa) 2>/dev/null || echo ""
+	sudo docker volume rm $$(sudo docker volume ls -q) 2>/dev/null || echo ""
+	sudo docker network rm $$(sudo docker network ls -q) 2>/dev/null || echo ""
 	sudo docker system prune -a --force
 
 re: clean all
