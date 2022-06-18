@@ -12,7 +12,7 @@ sleep 10
 wp core install --allow-root \
 				--url=mshmelly.42.fr \
 				--title=inception \
-				--admin_user=user \
+				--admin_user=${WP_ADMIN}  \
 				--admin_password=${WP_ADMIN_PASS}  \
 				--admin_email=user@mail.com \
 				--path=/var/www/wordpress/
