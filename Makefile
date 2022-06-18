@@ -27,8 +27,9 @@ clean:
 	sudo rm -rf /home/$(USER)/data/
 	sudo docker ps -aq | xargs --no-run-if-empty docker stop
 	sudo docker ps -aq | xargs --no-run-if-empty docker rm -v
-	sudo docker volume rm -f $$(sudo docker volume ls -q)
-	sudo docker images -aq | xargs --no-run-if-empty rmi 
+	sudo docker volume ls -q | xargs --no-run-if-empty docker rm -f
+	#sudo docker volume rm -f $$(sudo docker volume ls -q)
+	sudo docker images -aq | xargs --no-run-if-empty docker rmi -f  
 	sudo docker network rm $$(sudo docker network ls -q) 2>/dev/null || echo ""
 	sudo docker system prune -a --force
 
