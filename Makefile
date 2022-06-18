@@ -24,7 +24,7 @@ clean:
 	sudo rm -rf $(WP_VOL) $(DB_VOL)
 	sudo docker system prune -a -f --volumes
 	sudo docker system prune -a -f
-	sudo rm -rf /home/${USER}/data/
+	sudo rm -rf /home/$(USER)/data/
  	sudo docker ps -aq | xargs --no-run-if-empty docker stop
  	sudo docker ps -aq | xargs --no-run-if-empty docker rm -v
  	sudo docker images -aq | xargs --no--run-if-empty rmi -v
