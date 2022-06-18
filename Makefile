@@ -21,12 +21,14 @@ ps:
 	$(DOCKER) ps
 
 clean:
-	sudo rm -rf $(WP_VOLUME) $(DB_VOLUME)
- 	sudo rm -rf /home/$(USER)/data/
- 	sudo docker volume prune -f
+	sudo rm -rf $(WP_VOL) $(DB_VOL)
+	sudo docker system prune -a -f --volumes
+	sudo docker system prune -a -f
+	sudo rm -rf /home/${USER}/data/
  	sudo docker ps -aq | xargs --no-run-if-empty docker stop
  	sudo docker ps -aq | xargs --no-run-if-empty docker rm -v
  	sudo docker images -aq | xargs --no--run-if-empty rmi -v
+	sudo docker network rm $$(sudo docker network ls -q) 2>/dev/null || echo ""
  	sudo docker system prune -a --force
 
 re: clean all
